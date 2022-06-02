@@ -1,26 +1,49 @@
-//package main
-/*
+package main
 import (
-	"os"
-	"fmt"
-	"log"
+    "fmt"
+    "log"
+    "net/http"
 
-	"github.com/urfave/cli/v2"
+    "github.com/manifoldco/promptui"
+    "github.com/PuerkitoBio/goquery"
 )
 
-func main()  {
-	app := &cli.App{
-		Name: "greet",
-		Usage: "fight the loneliness!",
-		Action: func(c *cli.Context) error {
-			fmt.Println("Hello friend")
-			return nil
-		},
-	}
+const url = "https://ja.wikipedia.org/wiki/Python"
 
-	err := app.Run(os.Args)
-	if err != nil {
-		log.Fatel(err)
-	}
+func main() {
+  prompt := promptui.Select{
+    Label: "Choose the number",
+    Items: []int{1},
+  }
+
+  idx, result, err := prompt.Run()
+
+
+  if err != nil {
+    fmt.Printf("Prompt failed %v\n", err)
+    return
+  }
+
+  if result == "1" {
+    fmt.Println("Your choise is %d %q\n", idx, result)
+    scraping()
+  }
 }
-*/
+
+func scraping() {
+  res, err1 := http.Get(url)
+  if err1 != nil {
+    log.Println(err1)
+  }
+  defer res.Body.Close()
+
+  doc, _ := goquery.NewDocumentFromReader(res.Body)
+  doc.Find(".mw-headline").Each(func(i int, s *goquery.Selection) {
+    fmt.Println(s.Text())
+  })
+
+  fmt.Println("\n--------------------------------------------")
+  doc.Find(".tocnumber").Each(func(i int, s *goquery.Selection) {
+    fmt.Println(s.Text(), " ", s.Next().Text())
+  })
+}
