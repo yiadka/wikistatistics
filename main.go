@@ -3,20 +3,29 @@ import (
     "fmt"
     "log"
     "net/http"
+    "strconv"
+    "errors"
 
     "github.com/manifoldco/promptui"
     "github.com/PuerkitoBio/goquery"
 )
 
-const url = "https://ja.wikipedia.org/wiki/Python"
 
 func main() {
-  prompt := promptui.Select{
-    Label: "Choose the number",
-    Items: []int{1},
+
+  validate := func (input string) error {
+      _, err := strconv.ParseFloat(input, 64)
+      if err != nil {
+        return errors.New("Invalid String")
+      }
+      return nil
+  }
+  prompt := promptui.Prompt{
+    Label: "Type the words that you want to know",
+    Validate: validate,
   }
 
-  idx, result, err := prompt.Run()
+  var result, err = prompt.Run()
 
 
   if err != nil {
@@ -24,13 +33,18 @@ func main() {
     return
   }
 
-  if result == "1" {
-    fmt.Println("Your choise is %d %q\n", idx, result)
+  if result != "" {
+    fmt.Println("Your choise is \n", result)
     scraping()
   }
 }
 
+// This part does not work correctly
+value := func (c *Cursor) Get() string
+
 func scraping() {
+  const base_url = "https://ja.wikipedia.org/wiki/"
+  var url = base_url + value
   res, err1 := http.Get(url)
   if err1 != nil {
     log.Println(err1)
