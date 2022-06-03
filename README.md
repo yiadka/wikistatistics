@@ -1,5 +1,3 @@
-# Wiki Statistics Trivia
+# Wiki Short Trivia
 ## What's this?
-Get the statistics / math / economics trivia with this CLI.
-
-under construction....
+Get the short information with CLI
