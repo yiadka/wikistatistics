@@ -3,8 +3,9 @@ import (
     "fmt"
     "log"
     "net/http"
-    "strconv"
+    //"strconv"
     "errors"
+    //"reflect"
 
     "github.com/manifoldco/promptui"
     "github.com/PuerkitoBio/goquery"
@@ -13,13 +14,14 @@ import (
 
 func main() {
 
-  validate := func (input string) error {
-      _, err := strconv.ParseFloat(input, 64)
-      if err != nil {
-        return errors.New("Invalid String")
+  validate := func(input string) error {
+      //_, err := strconv.ParseFloat(input, 64)
+      if input == ""{
+        return errors.New("Input your search")
       }
       return nil
   }
+
   prompt := promptui.Prompt{
     Label: "Type the words that you want to know",
     Validate: validate,
@@ -33,31 +35,25 @@ func main() {
     return
   }
 
-  if result != "" {
-    fmt.Println("Your choise is \n", result)
-    scraping()
-  }
-}
-
-// This part does not work correctly
-value := func (c *Cursor) Get() string
-
-func scraping() {
   const base_url = "https://ja.wikipedia.org/wiki/"
-  var url = base_url + value
-  res, err1 := http.Get(url)
-  if err1 != nil {
-    log.Println(err1)
+  var url = base_url + result
+
+  if result != "" {
+    fmt.Println("Your choise is ", result)
+    res, err1 := http.Get(url)
+    if err1 != nil {
+      log.Println(err1)
+    }
+    defer res.Body.Close()
+
+    doc, _ := goquery.NewDocumentFromReader(res.Body)
+    doc.Find(".mw-headline").Each(func(i int, s *goquery.Selection) {
+      fmt.Println(s.Text())
+    })
+
+    fmt.Println("\n--------------------------------------------")
+    doc.Find(".tocnumber").Each(func(i int, s *goquery.Selection) {
+      fmt.Println(s.Text(), " ", s.Next().Text())
+    })
   }
-  defer res.Body.Close()
-
-  doc, _ := goquery.NewDocumentFromReader(res.Body)
-  doc.Find(".mw-headline").Each(func(i int, s *goquery.Selection) {
-    fmt.Println(s.Text())
-  })
-
-  fmt.Println("\n--------------------------------------------")
-  doc.Find(".tocnumber").Each(func(i int, s *goquery.Selection) {
-    fmt.Println(s.Text(), " ", s.Next().Text())
-  })
 }
