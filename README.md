@@ -1,7 +1,8 @@
 # Wiki Short Trivia
 ## What's this?
-Get the short information with CLI.
-This is a small applicatio that searches Wikipedia based on search keywords and displays an index of relevant articles.
+Get the short information with CLI. 
+
+This is a small application that searches Wikipedia based on search keywords and displays an index of relevant articles.
 ## How to Use
 ```
 cd ~/{your working directory}
