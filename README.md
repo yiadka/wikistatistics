@@ -13,3 +13,6 @@ Then you can see the screen like this.
 Type the words that you want to know:
 ```
 Type your keywords you want to know, and get the index of the words.
+
+**Warning**
+This application is not available in any language other than English.
